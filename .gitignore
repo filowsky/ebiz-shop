@@ -1,0 +1,16 @@
+.classpath
+.project
+.cache
+.settings
+.history
+.credentials
+repositoryKey.pem
+.idea
+.idea_modules
+target/
+/bin
+derby.log
+*.iml
+venv
+.DS_Store
+*.swp
