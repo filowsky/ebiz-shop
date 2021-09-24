@@ -1,10 +1,10 @@
-package com.example.http4spractice
+package com.ebiz.shop
 
 import cats.Applicative
 import cats.effect.{ConcurrentEffect, Sync}
 import cats.implicits._
-import com.example.http4spractice.ProductService.domain._
-import com.example.http4spractice.encoder._
+import com.ebiz.shop.ProductService.domain._
+import com.ebiz.shop.encoder._
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.auth.http.HttpTransportFactory
@@ -19,7 +19,7 @@ import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
 import java.util.Date
 import scala.concurrent.ExecutionContext.global
 
-object Http4spracticeRoutes {
+object ShopRoutes {
 
   def productsRoutes[F[_] : Sync](P: ProductService[F])(implicit cf: ConcurrentEffect[F]): HttpRoutes[F] = {
     implicit val clientResource = BlazeClientBuilder[F](global).resource

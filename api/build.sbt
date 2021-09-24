@@ -6,7 +6,7 @@ val LogbackVersion = "1.2.3"
 lazy val root = (project in file("."))
   .settings(
     organization := "com.example",
-    name := "http4s-practice",
+    name := "ebiz-shop",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.12.7",
     libraryDependencies ++= Seq(

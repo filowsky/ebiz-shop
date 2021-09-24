@@ -1,8 +1,8 @@
-package com.example.http4spractice
+package com.ebiz.shop
 
 import cats.Applicative
 import cats.implicits._
-import com.example.http4spractice.ProductService.domain._
+import com.ebiz.shop.ProductService.domain._
 
 import java.util.UUID
 import scala.collection.mutable
