@@ -14,7 +14,9 @@ import io.circe.{Encoder, Json}
 import org.http4s.circe._
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.dsl.Http4sDsl
-import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
+import org.http4s.headers.Location
+import org.http4s.util.CaseInsensitiveString
+import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes, Uri}
 
 import java.util.Date
 import scala.concurrent.ExecutionContext.global
@@ -27,7 +29,6 @@ object ShopRoutes {
     val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
-
       case req@POST -> Root / "auth" =>
         for {
           authReq <- req.as[String]
@@ -35,6 +36,7 @@ object ShopRoutes {
             case null => NotFound(errorBody(s"Empty body."))
             case x =>
               val h = req.headers
+              val origin = h.get(CaseInsensitiveString("Origin")).get.value
               val coo = req.cookies
               val att = req.attributes
               val token = x.split("&")(0).split("=")(1)
@@ -51,24 +53,9 @@ object ShopRoutes {
                 override def create(): HttpTransport = new NetHttpTransport()
               }).build()
               val result = verifier.verify(token)
-              //credential = jwt token
-              //result = we can have client_id~aud from there and exp time for this token (1 hour)
-              //token can be held in cookie
-              //              clientResource.use { c =>
-              //                val link = uri"http://localhost:3000"
-              //                val req: Request[F] = Request(GET, link)
-              //                val redirectClient = Logger(true, true, _ => false)(FollowRedirect[F](10, _ => true)(c))
-              //                redirectClient.toHttpApp.run(req)
-              //              }
-              Ok()
+              NotModified(Location(Uri.fromString(origin).getOrElse(null)))
           }
         } yield resp
-      //        clientResource.use { c =>
-      //          val link = uri"http://localhost:3000"
-      //          val req: Request[F] = Request(GET, link)
-      //          val redirectClient = Logger(true, true, _ => false)(FollowRedirect[F](10, _ => true)(c))
-      //          redirectClient.toHttpApp.run(req)
-      //        }
 
       case GET -> Root / "products" =>
         for {

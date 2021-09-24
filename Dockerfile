@@ -25,9 +25,9 @@ RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && \
     sdk install sbt ${SBT_VER}
 
 WORKDIR /app
-COPY ./project /app/project
-COPY ./src /app/src
-COPY ./build.sbt /app
+COPY ./api/project /app/project
+COPY ./api/src /app/src
+COPY ./api/build.sbt /app
 
 ENV PATH=/root/.sdkman/candidates/java/current/bin:$PATH
 ENV PATH=/root/.sdkman/candidates/scala/current/bin:$PATH
