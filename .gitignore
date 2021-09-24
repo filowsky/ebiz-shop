@@ -5,7 +5,7 @@
 .history
 .credentials
 repositoryKey.pem
-api/.idea
+.idea
 .idea_modules
 target/
 /bin
