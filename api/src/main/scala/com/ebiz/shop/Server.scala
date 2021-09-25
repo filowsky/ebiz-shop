@@ -23,7 +23,6 @@ object Server {
       .bindHttp(8080, "0.0.0.0")
       .withHttpApp(httpApp)
       .withIdleTimeout(Duration(5, TimeUnit.SECONDS))
-      //      .withSslContext(SSLContext.getDefault)
       .serve
   }.drain
 }
