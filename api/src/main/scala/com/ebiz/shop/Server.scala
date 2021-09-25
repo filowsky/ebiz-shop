@@ -15,7 +15,9 @@ import scala.concurrent.duration.Duration
 object Server {
 
   def stream[F[_] : ConcurrentEffect](implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
-    val products = ProductService.infra.synchronousProductService[F](new SlickProductsRepository(Database.forConfig("products")))
+    val products = ProductService.infra.synchronousProductService[F](
+      new SlickProductsRepository(Database.forConfig("products"))
+    )
     val httpApp = Logger.httpApp(logHeaders = true, logBody = true)(
       CORS(ShopRoutes.productsRoutes[F, Future](products)).orNotFound
     )
