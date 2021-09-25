@@ -1,9 +1,19 @@
-- name: deploy_gcp
-  uses: google-github-actions/deploy-cloudrun@v0.2.0
-  with:
-    service: ebiz-shop
-    image: europe-central2-docker.pkg.dev/steel-beanbag-294917/ebiznes/ebiz-shop
-    credentials: ${{ secrets.GCP_SA_KEY }}
-    region: europe-central2
+name: cicd
+on:
+  push:
+    paths:
+      - /**
+      - .github/workflows/ci-cd.yml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploy_gcp
+      uses: google-github-actions/deploy-cloudrun@v0.2.0
+      with:
+        service: ebiz-shop
+        image: europe-central2-docker.pkg.dev/steel-beanbag-294917/ebiznes/ebiz-shop
+        credentials: ${{ secrets.GCP_SA_KEY }}
+        region: europe-central2
 
 
