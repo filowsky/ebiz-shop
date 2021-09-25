@@ -13,7 +13,7 @@ jobs:
       with:
         service: ebiz-shop
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        image: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ebiznes/ebiz-shop
+        image: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ebiznes/ebiz-shop:latest
         credentials: ${{ secrets.GCP_SA_KEY }}
         region: europe-central2
 
