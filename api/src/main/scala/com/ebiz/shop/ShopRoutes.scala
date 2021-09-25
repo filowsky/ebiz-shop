@@ -23,7 +23,7 @@ import scala.concurrent.ExecutionContext.global
 
 object ShopRoutes {
 
-  def productsRoutes[F[_] : Sync](P: ProductService[F])(implicit cf: ConcurrentEffect[F]): HttpRoutes[F] = {
+  def productsRoutes[F[_] : Sync, T[_]](P: ProductService[F])(implicit cf: ConcurrentEffect[F]): HttpRoutes[F] = {
     implicit val clientResource = BlazeClientBuilder[F](global).resource
 
     val dsl = new Http4sDsl[F] {}
@@ -32,6 +32,7 @@ object ShopRoutes {
       case req@POST -> Root / "auth" =>
         for {
           authReq <- req.as[String]
+          authCookie = authReq.split("&")(0).split("=")(1)
           resp <- authReq match {
             case null => NotFound(errorBody(s"Empty body."))
             case x =>
@@ -55,7 +56,8 @@ object ShopRoutes {
               val result = verifier.verify(token)
               NotModified(Location(Uri.fromString(origin).getOrElse(null)))
           }
-        } yield resp
+          withCookie = resp.addCookie("shop_auth", authCookie)
+        } yield withCookie
 
       case GET -> Root / "products" =>
         for {

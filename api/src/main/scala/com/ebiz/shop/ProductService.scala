@@ -4,8 +4,8 @@ import cats.Applicative
 import cats.implicits._
 import com.ebiz.shop.ProductService.domain._
 
-import java.util.UUID
-import scala.collection.mutable
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 sealed trait ProductService[F[_]] {
   def get(id: String): F[Option[ShopProduct]]
@@ -42,49 +42,21 @@ object ProductService {
   }
 
   object infra {
-    def impl[F[_] : Applicative]: ProductService[F] = new ProductService[F] {
+    def synchronousProductService[F[_] : Applicative](productsRepository: SlickProductsRepository): ProductService[F] = new ProductService[F] {
 
-      private val db: mutable.Map[String, ShopProduct] = mutable.HashMap.empty[String, ShopProduct]
+      def get(id: String): F[Option[ShopProduct]] = await(productsRepository.get(id)).pure[F]
 
-      def get(id: String): F[Option[ShopProduct]] = db.get(id).pure[F]
+      def getAll(): F[Seq[ShopProduct]] = await(productsRepository.getAll()).pure[F]
 
-      def getAll(): F[Seq[ShopProduct]] = db.values.toSeq.pure[F]
+      def add(product: ProductCreationRequest): F[Either[ErrorMsg, ShopProduct]] = await(productsRepository.add(product)).pure[F]
 
-      def add(product: ProductCreationRequest): F[Either[ErrorMsg, ShopProduct]] =
-        UUID.randomUUID().toString.pure[F]
-          .map { uuid =>
-            db.put(uuid, ShopProduct(uuid, product.description, product.name, product.category)) match {
-              case None => db.get(uuid) match {
-                case None => Left(s"Product not added, description: ${product.name}")
-                case Some(product) => Right(product)
-              }
-              case Some(taproductk) => Right(taproductk)
-            }
-          }
+      def update(id: String, update: ProductUpdateRequest): F[UpdateStatus] = await(productsRepository.update(id, update)).pure[F]
 
-      def update(id: String, update: ProductUpdateRequest): F[UpdateStatus] = {
-        db.get(id) match {
-          case None => onUpdateOnAbsent(id)
-          case Some(_) => onStatusChangedOnPresent(id, update)
-        }
-      }.pure[F]
+      def delete(id: String): F[DeleteStatus] = await(productsRepository.delete(id)).pure[F]
 
-      def delete(id: String): F[DeleteStatus] = onDelete(id).pure[F]
-
-      private def onDelete(id: String): DeleteStatus = db.remove(id) match {
-        case None => DeleteFailure(id, "Product not deleted")
-        case Some(_) => DeleteSuccess(id)
+      private def await[X](f: Future[X]): X = {
+        Await.result(f, Duration.Inf)
       }
-
-      private def onUpdateOnAbsent(id: String): UpdateStatus =
-        UpdateFailure(id, s"Product with id: $id not found")
-
-      private def onStatusChangedOnPresent(id: String, update: ProductUpdateRequest): UpdateStatus =
-        db.put(id, ShopProduct(id, update.description, update.name, update.category)) match {
-          case None => UpdateFailure(id, "Couldn't update product")
-          case Some(product) => UpdateSuccess(product.id)
-        }
-
     }
   }
 
