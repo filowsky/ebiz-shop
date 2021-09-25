@@ -5,7 +5,7 @@ on:
       - /**
       - .github/workflows/ci-cd.yml
 jobs:
-  - name: deploy
+  - name: deploy_gcp
     uses: google-github-actions/deploy-cloudrun@v0.2.0
     with:
       service: ebiz-shop
