@@ -15,6 +15,7 @@ import org.http4s.circe._
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.headers.Location
+import org.http4s.implicits.http4sLiteralsSyntax
 import org.http4s.util.CaseInsensitiveString
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes, Uri}
 
@@ -54,7 +55,7 @@ object ShopRoutes {
                 override def create(): HttpTransport = new NetHttpTransport()
               }).build()
               val result = verifier.verify(token)
-              NotModified(Location(Uri.fromString(origin).getOrElse(null)))
+              NotModified(Location(uri"https://ebiz-shop-frontend-brqleqljrq-lm.a.run.app"))
           }
           withCookie = resp.addCookie("shop_auth", authCookie)
         } yield withCookie
