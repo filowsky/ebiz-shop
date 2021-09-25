@@ -1,7 +1,6 @@
 FROM ubuntu:latest as ScalaBuild
 
-EXPOSE 3000 3000
-EXPOSE 8080
+EXPOSE 3000
 
 SHELL ["/bin/bash", "-c"]
 
@@ -25,14 +24,21 @@ RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && \
     sdk install sbt ${SBT_VER}
 
 WORKDIR /app
-COPY ./api/project /app/project
-COPY ./api/src /app/src
-COPY ./api/build.sbt /app
+COPY ./api/project /app/api/project
+COPY ./api/src /app/api/src
+COPY ./api/build.sbt /app/api
 
 ENV PATH=/root/.sdkman/candidates/java/current/bin:$PATH
 ENV PATH=/root/.sdkman/candidates/scala/current/bin:$PATH
 ENV PATH=/root/.sdkman/candidates/sbt/current/bin:$PATH
 
-RUN sbt compile && sbt package
-CMD sbt run
+RUN cd api && sbt compile && sbt package
 
+COPY ./site/public /app/site/public
+COPY ./site/src /app/site/src
+COPY ./site/package.json /app/site
+COPY ./site/package-lock.json /app/site
+
+RUN cd site && npm install
+
+CMD cd site && (npm run start&) && cd ../api && sbt run
