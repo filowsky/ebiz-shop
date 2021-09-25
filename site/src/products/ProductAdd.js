@@ -13,7 +13,7 @@ export function ProductAdd({products, onProductsChange}) {
     }, [onProductsChange, products])
 
     const postProduct = (event) => {
-        sendRequest('http://localhost:8080/products', {
+        sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products', {
             name: newProductName,
             description: newProductDescription,
             category: newProductCategory

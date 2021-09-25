@@ -13,7 +13,7 @@ function Products() {
     const [selected, setSelected] = useState(null)
 
     const getProducts = async () => {
-        const url = "http://localhost:8080/products";
+        const url = "https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products";
         const data = await sendRequest(url, null)
         setProducts(data)
     }
