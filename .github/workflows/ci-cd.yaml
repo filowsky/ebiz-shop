@@ -11,9 +11,17 @@ jobs:
     - name: deploy_gcp
       uses: google-github-actions/deploy-cloudrun@v0.2.0
       with:
-        service: ebiz-shop
+        service: ebiz-shop-backend
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        image: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ebiznes/ebiz-shop
+        image: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ebiznes/ebiz-shop-backend:latest
+        credentials: ${{ secrets.GCP_SA_KEY }}
+        region: europe-central2
+    - name: deploy_frontend
+      uses: google-github-actions/deploy-cloudrun@v0.2.0
+      with:
+        service: ebiz-shop-frontend
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        image: europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ebiznes/ebiz-shop-frontend:latest
         credentials: ${{ secrets.GCP_SA_KEY }}
         region: europe-central2
 
