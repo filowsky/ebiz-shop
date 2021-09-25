@@ -1,6 +1,6 @@
 FROM ubuntu:latest as ScalaBuild
 
-EXPOSE 3000
+EXPOSE 8080
 
 SHELL ["/bin/bash", "-c"]
 
@@ -13,7 +13,7 @@ VOLUME /persist
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get update && apt-get install curl bash unzip zip sudo -y
-RUN curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash - && sudo apt-get install -y nodejs
+
 RUN curl -s "https://get.sdkman.io" | bash
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && \
@@ -34,11 +34,4 @@ ENV PATH=/root/.sdkman/candidates/sbt/current/bin:$PATH
 
 RUN cd api && sbt compile && sbt package
 
-COPY ./site/public /app/site/public
-COPY ./site/src /app/site/src
-COPY ./site/package.json /app/site
-COPY ./site/package-lock.json /app/site
-
-RUN cd site && npm install
-
-CMD cd site && (npm run start&) && cd ../api && sbt run
+CMD cd api && sbt run

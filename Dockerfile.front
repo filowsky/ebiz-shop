@@ -1,0 +1,23 @@
+FROM ubuntu:latest as NpmBuild
+
+EXPOSE 3000
+
+SHELL ["/bin/bash", "-c"]
+
+RUN mkdir -pv /persist
+VOLUME /persist
+
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get update && apt-get install curl bash unzip zip sudo -y
+RUN curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash - && sudo apt-get install -y nodejs
+
+WORKDIR /app
+
+COPY ./site/public /app/site/public
+COPY ./site/src /app/site/src
+COPY ./site/package.json /app/site
+COPY ./site/package-lock.json /app/site
+
+RUN cd site && npm install
+
+CMD cd site && npm run start
