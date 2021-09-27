@@ -17,7 +17,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.headers.Location
 import org.http4s.implicits.http4sLiteralsSyntax
 import org.http4s.util.CaseInsensitiveString
-import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes, Uri}
+import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes, ResponseCookie, SameSite, Uri}
 
 import java.util.Date
 import scala.concurrent.ExecutionContext.global
@@ -58,9 +58,7 @@ object ShopRoutes {
               NotModified(Location(uri"https://ebiz-shop-frontend-brqleqljrq-lm.a.run.app"))
           }
           withCookie = resp
-            .addCookie("shop_auth", authCookie)
-            .addCookie("Access-Control-Allow-Credentials", "true")
-            .addCookie("Access-Control-Allow-Origin", "*")
+            .addCookie(ResponseCookie(name = "shop_auth", content = authCookie, secure = true, sameSite = SameSite.None))
         } yield withCookie
 
       case GET -> Root / "products" =>
