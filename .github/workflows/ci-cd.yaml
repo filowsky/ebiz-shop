@@ -4,6 +4,7 @@ on:
     paths:
       - .**
       - .github/workflows/ci-cd.yml
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
