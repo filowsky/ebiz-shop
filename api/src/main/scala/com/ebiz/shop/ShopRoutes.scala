@@ -57,7 +57,10 @@ object ShopRoutes {
               val result = verifier.verify(token)
               NotModified(Location(uri"https://ebiz-shop-frontend-brqleqljrq-lm.a.run.app"))
           }
-          withCookie = resp.addCookie("shop_auth", authCookie)
+          withCookie = resp
+            .addCookie("shop_auth", authCookie)
+            .addCookie("Access-Control-Allow-Credentials", "true")
+            .addCookie("Access-Control-Allow-Origin", "*")
         } yield withCookie
 
       case GET -> Root / "products" =>
