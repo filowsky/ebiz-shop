@@ -4,10 +4,8 @@ import cats.effect.{ConcurrentEffect, Sync}
 import cats.implicits._
 import com.ebiz.shop.ProductService.domain._
 import com.ebiz.shop.encoder._
-import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.webtoken.JsonWebSignature
-import com.google.auth.http.HttpTransportFactory
 import com.google.auth.oauth2.TokenVerifier
 import io.circe.Json
 import io.circe.generic.auto._
@@ -24,9 +22,7 @@ import scala.util.{Failure, Success, Try}
 
 object ShopRoutes {
 
-  val verifier = TokenVerifier.newBuilder().setHttpTransportFactory(new HttpTransportFactory {
-    override def create(): HttpTransport = new NetHttpTransport()
-  }).build()
+  private val verifier: TokenVerifier = TokenVerifier.newBuilder().setHttpTransportFactory(() => new NetHttpTransport()).build()
 
   def productsRoutes[F[_] : Sync, T[_]](P: ProductService[F], U: UsersService[F])(implicit cf: ConcurrentEffect[F]): HttpRoutes[F] = {
     def extractAndCheckTokenData(jwt: JsonWebSignature): Boolean = {
@@ -34,12 +30,14 @@ object ShopRoutes {
 
       // Print user identifier
       val userId = payload.getSubject
-      val userName: String = payload.get("name").asInstanceOf[String]
-      val exp = payload.get("exp")
-      val emailVerified = payload.get("email_verified")
-
-      U.save(User(userId, userName, true))
-      true
+      val userName = payload.get("name").asInstanceOf[String]
+      val emailVerified = payload.get("email_verified").asInstanceOf[Boolean]
+      if (emailVerified) {
+        U.save(User(userId, userName, true))
+        true
+      } else {
+        false
+      }
     }
 
     def verifyWithPresentData(token: String): F[Boolean] = {
@@ -52,7 +50,7 @@ object ShopRoutes {
       }
     }
 
-    def checkAndProcoessTokenData(token: String): Boolean = {
+    def checkAndProcessTokenData(token: String): Boolean = {
       if (token == null) false
       else {
         Try {
@@ -80,7 +78,7 @@ object ShopRoutes {
         for {
           authReq <- req.as[String]
           authCookie = authReq.split("&")(0).split("=")(1)
-          verified = checkAndProcoessTokenData(authCookie)
+          verified = checkAndProcessTokenData(authCookie)
           resp <- {
             if (verified) NotModified(Location(uri"http://localhost:3000/products"))
             else NotFound(errorBody(s"Couldn't authorize."))
