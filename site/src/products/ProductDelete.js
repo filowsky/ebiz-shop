@@ -10,7 +10,7 @@ export function ProductDelete({products, onProductsChange, selected, onSelectedC
 
     const deleteProduct = (event) => {
         const removed = products.filter((prod) => prod.id !== selected[0])
-        sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products/' + selected[0], null, 'DELETE')
+        sendRequest('http://localhost:8080/products/' + selected[0], null, 'DELETE')
             .then(() => {
                 handleProductsChange(removed)
             });
