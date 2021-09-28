@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Box} from "@mui/material";
+import Cookies from 'js-cookie';
+
 import {ProductAdd} from '../products/ProductAdd'
 import sendRequest from "../requests";
 import {ProductDelete} from "./ProductDelete";
@@ -13,7 +15,7 @@ function Products() {
     const [selected, setSelected] = useState(null)
 
     const getProducts = async () => {
-        const url = "https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products";
+        const url = "http://localhost:8080/products";
         const data = await sendRequest(url, null)
         setProducts(data)
     }

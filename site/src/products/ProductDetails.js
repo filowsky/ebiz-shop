@@ -19,7 +19,7 @@ export class ProductDetails extends Component {
     }
 
     async getProduct(productId) {
-        let result = await sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products/' + productId, null)
+        let result = await sendRequest('http://localhost:8080/products/' + productId, null)
         this.setState({
             id: result.id,
             name: result.name,

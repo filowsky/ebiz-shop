@@ -18,8 +18,11 @@ object Server {
     val products = ProductService.infra.synchronousProductService[F](
       new SlickProductsRepository(Database.forConfig("products"))
     )
+    val users = UsersService.infra.synchronousUsersService[F](
+      new SlickUsersRepository(Database.forConfig("users"))
+    )
     val httpApp = Logger.httpApp(logHeaders = true, logBody = true)(
-      CORS(ShopRoutes.productsRoutes[F, Future](products)).orNotFound
+      CORS(ShopRoutes.productsRoutes[F, Future](products, users)).orNotFound
     )
     BlazeServerBuilder[F](global)
       .bindHttp(8080, "0.0.0.0")

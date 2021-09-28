@@ -20,7 +20,7 @@ class App extends Component {
             <div>
                 <div id="g_id_onload"
                      data-client_id="183614945179-dliqa6853fpsvs8k64oa2ubb632s5vha.apps.googleusercontent.com"
-                     data-login_uri="https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/auth"
+                     data-login_uri="http://localhost:8080/auth"
                      data-auto_prompt="false">
                 </div>
                 <div className="g_id_signin"

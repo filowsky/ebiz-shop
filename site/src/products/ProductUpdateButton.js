@@ -11,7 +11,7 @@ export function ProductUpdateButton({products, onProductsChange, selected, onSel
     const updateProduct = (event) => {
         console.log(selected[0])
         onSelectedChange(null)
-        sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products/' + "id", {
+        sendRequest('http://localhost:8080/products/' + "id", {
             name: "name",
             description: "description",
             category: "category"
