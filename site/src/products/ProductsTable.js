@@ -4,17 +4,15 @@ import React from "react";
 export function ProductsTable({products, onSelectedChange}) {
     const [selectionModel, setSelectionModel] = React.useState([]);
 
-    return <div style={{height: 600, width: '100%'}}>
-        <DataGrid
-            rows={products}
-            columns={columns}
-            onSelectionModelChange={(newSelectionModel) => {
-                onSelectedChange(newSelectionModel);
-            }}
-            selectionModel={selectionModel}
+    return <DataGrid
+        rows={products}
+        columns={columns}
+        onSelectionModelChange={(newSelectionModel) => {
+            onSelectedChange(newSelectionModel);
+        }}
+        selectionModel={selectionModel}
 
-        />
-    </div>
+    />
 }
 
 const columns = [

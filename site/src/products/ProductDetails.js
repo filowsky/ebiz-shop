@@ -1,6 +1,6 @@
 import sendRequest from "../requests";
-import {Component} from "react";
-import {Box} from "@mui/material";
+import React, {Component} from "react";
+import {Box, Button, TextField, Typography} from "@mui/material";
 
 export class ProductDetails extends Component {
     componentDidMount() {
@@ -14,12 +14,13 @@ export class ProductDetails extends Component {
             name: '',
             category: '',
             description: ''
-
         };
+        this.putProduct = this.putProduct.bind(this);
+
     }
 
     async getProduct(productId) {
-        let result = await sendRequest('http://localhost:8080/products/' + productId, null)
+        let result = await sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products/' + productId, null)
         this.setState({
             id: result.id,
             name: result.name,
@@ -28,13 +29,50 @@ export class ProductDetails extends Component {
         })
     }
 
+    async putProduct(event) {
+        const id = this.state.id
+        const name = this.state.name
+        const description = this.state.description
+        const category = this.state.category
+        await sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products' + '/' + id, {
+            name: name,
+            description: description,
+            category: category
+        }, 'PUT')
+        event.preventDefault()
+    }
+
     render() {
         return (
             <ul>
-                <li>{this.state.id}</li>
-                <li>{this.state.name}</li>
-                <li>{this.state.description}</li>
-                <li>{this.state.category}</li>
+                <li>
+                    <b>ID: </b>
+                    <Typography><b>{this.state.id}</b></Typography>
+                </li>
+                <li>
+                    Name:
+                    <input type="text" readOnly={false} defaultValue={this.state.name} onChange={(e) => {
+                        this.setState({name: e.target.value})
+                        console.log(this.state.name)
+                    }}/>
+                </li>
+                <li>
+                    Description:
+                    <input type="text" readOnly={false} defaultValue={this.state.description} onChange={(e) => {
+                        this.setState({description: e.target.value})
+                        console.log(this.state.description)
+                    }}/>
+                </li>
+                <li>
+                    Category:
+                    <input type="text" readOnly={false} defaultValue={this.state.category} onChange={(e) => {
+                        this.setState({category: e.target.value})
+                        console.log(this.state.category)
+                    }}/>
+                </li>
+                <li>
+                    <Button type="submit" variant="contained" onClick={this.putProduct}>Submit</Button>
+                </li>
             </ul>
         )
     }

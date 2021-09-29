@@ -9,6 +9,7 @@ import com.google.api.client.json.webtoken.JsonWebSignature
 import com.google.auth.oauth2.TokenVerifier
 import io.circe.Json
 import io.circe.generic.auto._
+import io.circe.parser.parse
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.client.blaze.BlazeClientBuilder
@@ -22,18 +23,18 @@ import scala.util.{Failure, Success, Try}
 
 object ShopRoutes {
 
+
   private val verifier: TokenVerifier = TokenVerifier.newBuilder().setHttpTransportFactory(() => new NetHttpTransport()).build()
 
   def productsRoutes[F[_] : Sync, T[_]](P: ProductService[F], U: UsersService[F])(implicit cf: ConcurrentEffect[F]): HttpRoutes[F] = {
-    def extractAndCheckTokenData(jwt: JsonWebSignature): Boolean = {
-      val payload = jwt.getPayload
 
-      // Print user identifier
+    def extractAndCheckTokenData(jwt: JsonWebSignature, raw: String): Boolean = {
+      val payload = jwt.getPayload
       val userId = payload.getSubject
       val userName = payload.get("name").asInstanceOf[String]
       val emailVerified = payload.get("email_verified").asInstanceOf[Boolean]
       if (emailVerified) {
-        U.save(User(userId, userName, true))
+        U.save(User(userId, userName, true, raw))
         true
       } else {
         false
@@ -44,9 +45,23 @@ object ShopRoutes {
       Try {
         verifier.verify(token)
       } match {
-        case Failure(_) => false.pure[F]
-        case Success(value) =>
-          U.validateToken(value.getPayload.getSubject)
+        case Failure(_) => if (token != "undefined") invalidateToken(token) else false.pure[F]
+        case Success(value) => U.validateToken(value.getPayload.getSubject)
+      }
+    }
+
+    def invalidateToken(token: String): F[Boolean] = {
+      import java.util.Base64
+      val chunks = token.split("\\.")
+      val decoder = Base64.getDecoder
+      val payload = new String(decoder.decode(chunks(1)))
+      parse(payload) match {
+        case Right(value) =>
+          val raw = value.\\("sub").head.toString()
+          val id_1 = raw.substring(1)
+          val id = id_1.substring(0, id_1.length - 1)
+          U.updateValidation(id, isValid = false)
+        case Left(_) => false.pure[F]
       }
     }
 
@@ -56,15 +71,21 @@ object ShopRoutes {
         Try {
           verifier.verify(token)
         } match {
-          case Success(jwt) => extractAndCheckTokenData(jwt)
+          case Success(jwt) => extractAndCheckTokenData(jwt, token)
           case Failure(_) => false
         }
       }
     }
 
     def authorize(request: Request[F]): F[Boolean] = request.headers.get(CaseInsensitiveString.apply("Authorization")) match {
-      //TODO: check user id
-      case None => false.pure[F]
+      case None =>
+        request.headers.get(CaseInsensitiveString.apply("User-Id")) match {
+          case None => false.pure[F]
+          case Some(id) => U.get(id.value).flatMap {
+            case None => false.pure[F]
+            case Some(value) => verifyWithPresentData(value.token)
+          }
+        }
       case Some(token) => verifyWithPresentData(token.value)
     }
 
@@ -80,7 +101,7 @@ object ShopRoutes {
           authCookie = authReq.split("&")(0).split("=")(1)
           verified = checkAndProcessTokenData(authCookie)
           resp <- {
-            if (verified) NotModified(Location(uri"http://localhost:3000/products"))
+            if (verified) NotModified(Location(uri"https://ebiz-shop-frontend-brqleqljrq-lm.a.run.app/products"))
             else NotFound(errorBody(s"Couldn't authorize."))
           }
         } yield {
@@ -170,7 +191,6 @@ object ShopRoutes {
     ("message", Json.fromString(message))
   )
 }
-
 
 final case class ProductCreationRequest(name: String, description: String, category: String)
 

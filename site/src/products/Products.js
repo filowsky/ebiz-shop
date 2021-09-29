@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box} from "@mui/material";
-import Cookies from 'js-cookie';
+import {Grid} from "@mui/material";
 
 import {ProductAdd} from '../products/ProductAdd'
 import sendRequest from "../requests";
@@ -15,7 +14,7 @@ function Products() {
     const [selected, setSelected] = useState(null)
 
     const getProducts = async () => {
-        const url = "http://localhost:8080/products";
+        const url = "https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products";
         const data = await sendRequest(url, null)
         setProducts(data)
     }
@@ -24,22 +23,17 @@ function Products() {
         getProducts()
     }, []);
 
-    return <Box
-        component="form"
-        sx={{
-            '& .MuiTextField-root': {m: 1, width: '25ch'},
-        }}
-        noValidate
-        autoComplete="off"
-    >
-        <div className="products">
+    return <Grid sx={{ flexGrow: 1 }} >
+        <Grid sx={{ flexGrow: 1 }} >
             <ProductAdd products={products} onProductsChange={setProducts}/>
-            <ProductDelete products={products} onProductsChange={setProducts} selected={selected} onSelectedChange={setSelected}/>
+            <ProductDelete products={products} onProductsChange={setProducts} selected={selected}
+                           onSelectedChange={setSelected}/>
             <ProductsDetailsButton selected={selected}/>
-            <ProductUpdateButton products={products} onProductsChange={setProducts} selected={selected} onSelectedChange={setSelected}/>
+        </Grid>
+        <Grid sx={{ flexGrow: 1 }} height = {1200}>
             <ProductsTable products={products} onSelectedChange={setSelected}/>
-        </div>
-    </Box>
+        </Grid>
+    </Grid>
 }
 
 export default Products;
