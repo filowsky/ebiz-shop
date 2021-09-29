@@ -23,7 +23,6 @@ import scala.util.{Failure, Success, Try}
 
 object ShopRoutes {
 
-
   private val verifier: TokenVerifier = TokenVerifier.newBuilder().setHttpTransportFactory(() => new NetHttpTransport()).build()
 
   def productsRoutes[F[_] : Sync, T[_]](P: ProductService[F], U: UsersService[F])(implicit cf: ConcurrentEffect[F]): HttpRoutes[F] = {
