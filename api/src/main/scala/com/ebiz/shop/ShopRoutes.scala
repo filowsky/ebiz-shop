@@ -78,7 +78,7 @@ object ShopRoutes {
 
     def authorize(request: Request[F]): F[Boolean] = request.headers.get(CaseInsensitiveString.apply("Authorization")) match {
       case None =>
-        request.headers.get(CaseInsensitiveString.apply("User-Id")) match {
+        request.headers.get(CaseInsensitiveString.apply("user_id")) match {
           case None => false.pure[F]
           case Some(id) => U.get(id.value).flatMap {
             case None => false.pure[F]

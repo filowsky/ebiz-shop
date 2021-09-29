@@ -6,7 +6,8 @@ export default async function sendRequest(url, data, method='GET') {
         headers: {
             'Accept': 'application/json',
             'Content-type': 'application/json',
-            'Authorization': Cookies.get('shop_auth')
+            'Authorization': Cookies.get('shop_auth'),
+            'user_id': Cookies.get('user_id'),
         },
         mode: 'cors',
         credentials: 'include',
