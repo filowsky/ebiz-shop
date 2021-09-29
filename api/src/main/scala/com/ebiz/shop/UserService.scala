@@ -16,7 +16,7 @@ sealed trait UsersService[F[_]] {
   def isUserPresent(id: String): F[Boolean]
 }
 
-case class User(id: String, name: String, validToken: Boolean)
+case class User(id: String, name: String, validToken: Boolean, token: String)
 
 object UsersService {
   object infra {

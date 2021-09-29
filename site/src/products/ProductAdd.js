@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {Button, TextField} from "@mui/material";
+import {Button, Grid, Stack, TextField} from "@mui/material";
 import sendRequest from "../requests";
 
 export function ProductAdd({products, onProductsChange}) {
@@ -13,7 +13,7 @@ export function ProductAdd({products, onProductsChange}) {
     }, [onProductsChange, products])
 
     const postProduct = (event) => {
-        sendRequest('http://localhost:8080/products', {
+        sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products', {
             name: newProductName,
             description: newProductDescription,
             category: newProductCategory
@@ -24,14 +24,17 @@ export function ProductAdd({products, onProductsChange}) {
     }
 
 
-    return <div>
-        <TextField id="outlined-basic" label="Name" variant="outlined" value={newProductName}
-                   onChange={e => setNewProductName(e.target.value)}/>
-        <TextField id="outlined-basic" label="Description" variant="outlined"
-                   value={newProductDescription} onChange={e => setNewProductDescription(e.target.value)}/>
-        <TextField id="outlined-basic" label="Category" variant="outlined"
-                   onChange={e => setNewCategory(e.target.value)}/>
+    return <Grid>
+        <Stack spacing={2} direction="row">
+            <TextField id="outlined-basic" label="Name" variant="outlined" value={newProductName}
+                       onChange={e => setNewProductName(e.target.value)}/>
+            <TextField id="outlined-basic" label="Description" variant="outlined"
+                       value={newProductDescription} onChange={e => setNewProductDescription(e.target.value)}/>
+            <TextField id="outlined-basic" label="Category" variant="outlined"
+                       onChange={e => setNewCategory(e.target.value)}/>
+        </Stack>
         <Button type="submit" variant="contained" onClick={postProduct}>Submit</Button>
-    </div>
+    </Grid>
+
 
 }

@@ -28,9 +28,7 @@ class SlickUsersRepository(db: Database) extends UsersRepository[Future] {
 
   override def save(user: User): Future[Either[ErrorMsg, Unit]] = {
     db.run {
-      DBIO.seq(
-        users += (user.id, user.name, user.validToken)
-      )
+      users.insertOrUpdate(user.id, user.name, user.validToken, user.token)
     }.transform {
       case Success(_) => Try(Unit)
       case Failure(_) => Try(null)
@@ -43,7 +41,7 @@ class SlickUsersRepository(db: Database) extends UsersRepository[Future] {
   override def get(id: String): Future[Option[User]] = db.run {
     users.filter(u => u.id === id).result.headOption
   }.map { x =>
-    x.map(entity => User(entity._1, entity._2, entity._3))
+    x.map(entity => User(entity._1, entity._2, entity._3, entity._4))
   }
 
   override def validateToken(id: String): Future[Boolean] = get(id).map {
@@ -64,7 +62,7 @@ class SlickUsersRepository(db: Database) extends UsersRepository[Future] {
   }
 }
 
-class UserTable(tag: Tag) extends Table[(String, String, Boolean)](tag, "users") {
+class UserTable(tag: Tag) extends Table[(String, String, Boolean, String)](tag, "users") {
 
   def id = column[String]("id", O.PrimaryKey)
 
@@ -72,5 +70,7 @@ class UserTable(tag: Tag) extends Table[(String, String, Boolean)](tag, "users")
 
   def validToken = column[Boolean]("validToken")
 
-  def * = (id, name, validToken)
+  def token = column[String]("token")
+
+  def * = (id, name, validToken, token)
 }
