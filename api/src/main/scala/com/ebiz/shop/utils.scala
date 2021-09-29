@@ -7,5 +7,4 @@ object utils {
   def await[X](f: Future[X]): X = {
     Await.result(f, Duration.Inf)
   }
-
 }
