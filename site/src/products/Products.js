@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Grid} from "@mui/material";
 
 import {ProductAdd} from '../products/ProductAdd'
-import sendRequest from "../requests";
+import sendRequest from "../sendRequest";
 import {ProductDelete} from "./ProductDelete";
 import {ProductsTable} from "./ProductsTable";
 import {ProductsDetailsButton} from "./ProductsDetailsButton";
@@ -30,7 +30,7 @@ function Products() {
                            onSelectedChange={setSelected}/>
             <ProductsDetailsButton selected={selected}/>
         </Grid>
-        <Grid sx={{ flexGrow: 1 }} height = {1200}>
+        <Grid sx={{ flexGrow: 2 }} height = {1200}>
             <ProductsTable products={products} onSelectedChange={setSelected}/>
         </Grid>
     </Grid>

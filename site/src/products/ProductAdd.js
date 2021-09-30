@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from "react";
 import {Button, Grid, Stack, TextField} from "@mui/material";
-import sendRequest from "../requests";
+import sendRequest from "../sendRequest";
 
 export function ProductAdd({products, onProductsChange}) {
 
@@ -12,7 +12,13 @@ export function ProductAdd({products, onProductsChange}) {
         onProductsChange(products.concat([event]))
     }, [onProductsChange, products])
 
-    const postProduct = (event) => {
+    const postProduct = async (event) => {
+        // await getToken().then(data => {
+        //     data.text().then(d => {
+        //         Cookies.set("auth", d)
+        //         }
+        //     )
+        // })
         sendRequest('https://ebiz-shop-backend-brqleqljrq-lm.a.run.app/products', {
             name: newProductName,
             description: newProductDescription,
@@ -24,7 +30,7 @@ export function ProductAdd({products, onProductsChange}) {
     }
 
 
-    return <Grid>
+    return <Grid spacing={2}>
         <Stack spacing={2} direction="row">
             <TextField id="outlined-basic" label="Name" variant="outlined" value={newProductName}
                        onChange={e => setNewProductName(e.target.value)}/>

@@ -1,6 +1,6 @@
 import {Button} from "@mui/material";
 import React, {useCallback} from "react";
-import sendRequest from "../requests";
+import sendRequest from "../sendRequest";
 
 export function ProductUpdateButton({products, onProductsChange, selected, onSelectedChange}) {
 

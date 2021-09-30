@@ -1,6 +1,7 @@
 FROM ubuntu:latest as NpmBuild
 
 EXPOSE 3000
+EXPOSE 5000
 
 SHELL ["/bin/bash", "-c"]
 
@@ -17,7 +18,8 @@ COPY ./site/public /app/site/public
 COPY ./site/src /app/site/src
 COPY ./site/package.json /app/site
 COPY ./site/package-lock.json /app/site
+COPY ./site/server.js /app/site
 
 RUN cd site && npm install
 
-CMD cd site && npm run start
+CMD cd site && (npm run start&) && node server.js

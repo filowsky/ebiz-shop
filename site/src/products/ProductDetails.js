@@ -1,6 +1,6 @@
-import sendRequest from "../requests";
+import sendRequest from "../sendRequest";
 import React, {Component} from "react";
-import {Box, Button, TextField, Typography} from "@mui/material";
+import {Button, Typography} from "@mui/material";
 
 export class ProductDetails extends Component {
     componentDidMount() {

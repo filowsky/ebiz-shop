@@ -28,6 +28,10 @@ export function Home() {
     function handleClick() {
         Cookies.remove("shop_auth");
         Cookies.remove("user_id");
+        refresh();
+    }
+
+    function refresh() {
         window.location.reload();
     }
 
@@ -46,7 +50,6 @@ export function Home() {
                 <Grid container>
                     <Grid item sx={{flexGrow: 1}} container spacing={2}>
                         {button}
-                        {/*<Grid><Typography fontStyle={"aria"}>Ebiz shop</Typography></Grid>*/}
                     </Grid>
                 </Grid>
             </Paper>
@@ -56,7 +59,7 @@ export function Home() {
                 <Grid item>
                     <Paper sx={{height: 100, width: 600}} elevation={3}>
                         <Link to="/products">
-                            <button type="button">
+                            <button type="button" onClick={refresh}>
                                 Products
                             </button>
                         </Link>
@@ -65,7 +68,7 @@ export function Home() {
                 <Grid item>
                     <Paper sx={{height: 100, width: 600}} elevation={3}>
                         <Link to="/">
-                            <button type="button">
+                            <button type="button" onClick={refresh}>
                                 Cart
                             </button>
                         </Link>

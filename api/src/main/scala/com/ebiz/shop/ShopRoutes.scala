@@ -57,8 +57,8 @@ object ShopRoutes {
       parse(payload) match {
         case Right(value) =>
           val raw = value.\\("sub").head.toString()
-          val id_1 = raw.substring(1)
-          val id = id_1.substring(0, id_1.length - 1)
+          val firstPart = raw.substring(1)
+          val id = firstPart.substring(0, firstPart.length - 1)
           U.updateValidation(id, isValid = false)
         case Left(_) => false.pure[F]
       }
@@ -104,7 +104,8 @@ object ShopRoutes {
             else NotFound(errorBody(s"Couldn't authorize."))
           }
         } yield {
-          if (verified) resp.addCookie(ResponseCookie(name = "shop_auth", content = authCookie, domain=Some(".a.run.app")))
+//          if (verified) resp.addCookie(ResponseCookie(name = "shop_auth", content = authCookie, domain=Some(".a.run.app")))
+          if (verified) resp.addCookie(ResponseCookie(name = "shop_auth", content = authCookie))
           else resp
         }
 
