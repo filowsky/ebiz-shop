@@ -104,7 +104,6 @@ object ShopRoutes {
             else NotFound(errorBody(s"Couldn't authorize."))
           }
         } yield {
-//          if (verified) resp.addCookie(ResponseCookie(name = "shop_auth", content = authCookie, domain=Some(".a.run.app")))
           if (verified) resp.addCookie(ResponseCookie(name = "shop_auth", content = authCookie))
           else resp
         }

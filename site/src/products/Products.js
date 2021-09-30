@@ -6,7 +6,6 @@ import sendRequest from "../sendRequest";
 import {ProductDelete} from "./ProductDelete";
 import {ProductsTable} from "./ProductsTable";
 import {ProductsDetailsButton} from "./ProductsDetailsButton";
-import {ProductUpdateButton} from "./ProductUpdateButton";
 
 function Products() {
 
