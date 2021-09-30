@@ -1,14 +1,11 @@
-import {Button, Grid, Paper, Typography} from "@mui/material";
-import {Link, useHistory} from "react-router-dom";
+import {Button, Grid, Paper} from "@mui/material";
+import {Link} from "react-router-dom";
 import React, {useEffect} from "react";
 import Cookies from "js-cookie";
 
 export function Home() {
-    const history = useHistory();
-
-    const isLoggedIn = Cookies.get("shop_auth");
     let button;
-    if (isLoggedIn !== undefined) {
+    if (Cookies.get("shop_auth") !== undefined || Cookies.get("user_id") !== undefined) {
         button = <Grid><Button onClick={handleClick}>Sign out</Button></Grid>
     } else {
         button = <Grid>
@@ -30,6 +27,11 @@ export function Home() {
 
     function handleClick() {
         Cookies.remove("shop_auth");
+        Cookies.remove("user_id");
+        refresh();
+    }
+
+    function refresh() {
         window.location.reload();
     }
 
@@ -42,32 +44,31 @@ export function Home() {
         document.body.appendChild(script);
     }, []);
 
-    return <Grid sx={{ flexGrow: 1 }} container spacing={10}>
+    return <Grid sx={{flexGrow: 1}} container spacing={10}>
         <Grid item xs={12} color={"blue"}>
-            <Paper sx={{ p: 2 }} elevation={3}>
+            <Paper sx={{p: 2}} elevation={3}>
                 <Grid container>
-                    <Grid item sx={{ flexGrow: 1 }} container spacing={2} >
+                    <Grid item sx={{flexGrow: 1}} container spacing={2}>
                         {button}
-                        {/*<Grid><Typography fontStyle={"aria"}>Ebiz shop</Typography></Grid>*/}
                     </Grid>
                 </Grid>
             </Paper>
         </Grid>
-        <Grid item xs={12} >
+        <Grid item xs={12}>
             <Grid container justifyContent="center" spacing={5}>
                 <Grid item>
-                    <Paper sx={{ height: 100, width: 600 }} elevation={3}>
+                    <Paper sx={{height: 100, width: 600}} elevation={3}>
                         <Link to="/products">
-                            <button type="button">
+                            <button type="button" onClick={refresh}>
                                 Products
                             </button>
                         </Link>
                     </Paper>
                 </Grid>
                 <Grid item>
-                    <Paper sx={{ height: 100, width: 600 }} elevation={3}>
+                    <Paper sx={{height: 100, width: 600}} elevation={3}>
                         <Link to="/">
-                            <button type="button">
+                            <button type="button" onClick={refresh}>
                                 Cart
                             </button>
                         </Link>

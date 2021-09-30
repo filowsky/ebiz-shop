@@ -2,7 +2,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import React from "react";
 
 export function ProductsTable({products, onSelectedChange}) {
-    const [selectionModel, setSelectionModel] = React.useState([]);
+    const [selectionModel] = React.useState([]);
 
     return <DataGrid
         rows={products}
